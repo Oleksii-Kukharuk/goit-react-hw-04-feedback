@@ -22,6 +22,6 @@ export const Total = ({ Total, persentage }) => {
   );
 };
 
-export const DefaultText = ({ text }) => {
+export const DefaultText = () => {
   return <OrdinaryP>there is no feed</OrdinaryP>;
 };

@@ -6,57 +6,60 @@ import {
   Total,
 } from 'components/Statistics/Statistics';
 import { Section } from 'components/Section/Section';
+import { useState } from 'react';
 
-class Feedback extends React.Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+const Feedback = () => {
+  const [good, setGood] = useState(0);
+  const [neutural, setNeutural] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const clickHandler = e => {
+    const name = e.target.name;
+    switch (name) {
+      case 'good':
+        setGood(prevState => prevState + 1);
+        break;
+      case 'neutural':
+        setNeutural(prevState => prevState + 1);
+        break;
+      case 'bad':
+        setBad(prevState => prevState + 1);
+        break;
+      default:
+        return;
+    }
   };
 
-  clickHandler = e => {
-    this.setState(prevState => ({
-      [e.target.name]: prevState[e.target.name] + 1,
-    }));
-  };
-
-  countTotalFeedback = () => {
-    const { bad, good, neutral } = this.state;
-    const total = bad + good + neutral;
-    // console.log(total);
+  const countTotalFeedback = () => {
+    const total = bad + good + neutural;
     return total;
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const persent = this.state.good / this.countTotalFeedback();
+  const countPositiveFeedbackPercentage = () => {
+    const persent = good / countTotalFeedback();
     return persent ? Math.round(persent * 100) : 0;
   };
 
-  render() {
-    return (
-      <>
-        <Section title={'Please leave feed and back'}>
-          <FeedbackMurkup onClick={this.clickHandler} />
+  return (
+    <>
+      <Section title={'Please leave feed and back'}>
+        <FeedbackMurkup onClick={clickHandler} />
+      </Section>
+      {countTotalFeedback() > 0 ? (
+        <Section>
+          <Statistics Good={good} Bad={bad} Neutural={neutural} />
+          <Total
+            Total={countTotalFeedback()}
+            persentage={countPositiveFeedbackPercentage()}
+          />
         </Section>
-        {this.countTotalFeedback() > 0 ? (
-          <Section>
-            <Statistics
-              Good={this.state.good}
-              Bad={this.state.bad}
-              Neutural={this.state.neutral}
-            />
-            <Total
-              Total={this.countTotalFeedback()}
-              persentage={this.countPositiveFeedbackPercentage()}
-            />
-          </Section>
-        ) : (
-          <DefaultText />
-        )}
-      </>
-    );
-  }
-}
+      ) : (
+        <DefaultText />
+      )}
+    </>
+  );
+};
+
 export const App = () => {
   return <Feedback />;
 };
